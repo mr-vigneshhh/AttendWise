@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AttendWise - Track attendance and avoid shortages." />
+  <title>AttendWise | Attendance Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="AttendWise home">
+      <span class="brand-icon">AW</span>
+      <span>
+        <strong>AttendWise</strong>
+        <small>Stay ahead of shortages</small>
+      </span>
+    </a>
+
+    <div class="topbar-actions">
+      <button id="notificationBtn" class="icon-button" type="button" title="Enable reminders">
+        <span aria-hidden="true">🔔</span>
+        <span class="button-label">Reminders</span>
+      </button>
+      <button id="themeToggle" class="icon-button" type="button" title="Toggle theme" aria-label="Toggle dark mode">
+        <span id="themeIcon" aria-hidden="true">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">SMART ATTENDANCE PLANNER</span>
+        <h1>Know your attendance.<br><span>Plan your next class.</span></h1>
+        <p>Track every subject, identify shortages early, and find out exactly how many classes you need to attend.</p>
+      </div>
+
+      <div class="target-card">
+        <label for="minimumAttendance">Minimum attendance target</label>
+        <div class="target-control">
+          <input id="minimumAttendance" type="number" min="1" max="100" value="75" />
+          <span>%</span>
+        </div>
+        <small>Risk levels update automatically.</small>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Attendance summary">
+      <article class="summary-card">
+        <span class="summary-icon purple">📚</span>
+        <div>
+          <p>Total Subjects</p>
+          <strong id="totalSubjects">0</strong>
+        </div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon green">✓</span>
+        <div>
+          <p>Safe Subjects</p>
+          <strong id="safeSubjects">0</strong>
+        </div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon red">!</span>
+        <div>
+          <p>At Risk</p>
+          <strong id="riskSubjects">0</strong>
+        </div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon blue">%</span>
+        <div>
+          <p>Overall Attendance</p>
+          <strong id="overallAttendance">0%</strong>
+        </div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <aside class="form-panel">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">MANAGE SUBJECT</span>
+            <h2 id="formTitle">Add a subject</h2>
+          </div>
+          <button id="cancelEditBtn" class="text-button hidden" type="button">Cancel</button>
+        </div>
+
+        <form id="subjectForm" novalidate>
+          <input id="subjectId" type="hidden" />
+
+          <label for="subjectName">Subject name</label>
+          <input id="subjectName" type="text" maxlength="40" placeholder="e.g. Data Structures" required />
+          <small class="error" id="nameError"></small>
+
+          <div class="form-row">
+            <div>
+              <label for="totalClasses">Total classes</label>
+              <input id="totalClasses" type="number" min="0" placeholder="20" required />
+              <small class="error" id="totalError"></small>
+            </div>
+            <div>
+              <label for="attendedClasses">Classes attended</label>
+              <input id="attendedClasses" type="number" min="0" placeholder="16" required />
+              <small class="error" id="attendedError"></small>
+            </div>
+          </div>
+
+          <button class="primary-button" type="submit">
+            <span id="submitButtonText">Add Subject</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+
+        <div class="quick-tip">
+          <span aria-hidden="true">💡</span>
+          <p><strong>Quick tip:</strong> Update your attendance after every class for accurate predictions.</p>
+        </div>
+      </aside>
+
+      <section class="subjects-panel">
+        <div class="section-heading subjects-heading">
+          <div>
+            <span class="eyebrow">YOUR PROGRESS</span>
+            <h2>Subject overview</h2>
+          </div>
+          <button id="resetDataBtn" class="text-button danger-text" type="button">Reset demo</button>
+        </div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <div>📘</div>
+          <h3>No subjects yet</h3>
+          <p>Add your first subject to start tracking attendance.</p>
+        </div>
+
+        <div id="subjectsGrid" class="subjects-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-icon">🗑️</div>
+      <h3 id="modalTitle">Delete subject?</h3>
+      <p>This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="cancelDeleteBtn" class="secondary-button" type="button">Cancel</button>
+        <button id="confirmDeleteBtn" class="danger-button" type="button">Delete</button>
+      </div>
+    </div>
+  </div>
+<!-- Linking script -->
+  <script src="script.js"></script>
+</body>
+</html>
