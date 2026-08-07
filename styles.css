@@ -749,3 +749,14 @@ form input:focus {
 .reminder-list{display:grid;gap:8px}.reminder-item{display:flex;justify-content:space-between;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surface-solid);font-size:.7rem}.reminder-item span{color:var(--muted)}.reminder-item button{border:0;color:var(--red);background:transparent;font-size:.68rem;font-weight:700}
 .attended-action.is-saving{opacity:.65;pointer-events:none}.mini-spinner{width:12px;height:12px;display:inline-block;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:720px){.reminder-form{grid-template-columns:1fr}}
+
+.reminder-panel{gap:16px}
+.reminder-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.notification-status{white-space:nowrap;border-radius:999px;padding:6px 9px;color:var(--muted);background:var(--bg);font-size:.64rem;font-weight:800}
+.notification-status.on{color:var(--green);background:var(--green-bg)}
+.reminder-help{padding:10px 12px;border-radius:10px;color:var(--muted);background:var(--bg);font-size:.68rem;line-height:1.45}
+.reminder-item{min-height:44px}
+.reminder-time{color:var(--muted);font-size:.65rem}
+.reminder-countdown{color:var(--primary);font-size:.66rem;font-weight:800}
+.absent-action:hover{color:var(--red)!important;border-color:var(--red)!important}
+@media(max-width:620px){.reminder-panel-head{flex-direction:column}.card-actions{flex-wrap:wrap}.card-actions button{min-width:calc(50% - 4px)}}

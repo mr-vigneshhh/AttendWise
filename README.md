@@ -1,20 +1,17 @@
-# AttendWise v2
+# AttendWise v3
 
-Updated hackathon MVP:
-- One-tap **Attended +1** on every subject card
-- Instant percentage/progress/status updates
-- LocalStorage persistence and rapid-click protection
-- One-time class reminders with cancellation and duplicate prevention
-- Browser notification permission handling
-- Local timezone formatting
-- PWA manifest + Service Worker offline shell
+Added:
+- Attended +1
+- Absent +1
+- Instant percentage/risk updates
+- Rapid-click protection
+- Redesigned reminders with date/time, countdown, cancel, duplicate prevention and notification status
+- PWA manifest + Service Worker
 
-## Run
-Use a local server:
+Run:
 ```bash
 python -m http.server 8000
 ```
-Open `http://localhost:8000`.
+Open http://localhost:8000.
 
-## Reminder limitation
-The MVP schedules notifications with `setTimeout()`, so it works reliably while the app/page remains active. Browsers can suspend timers when an app is fully closed/backgrounded. Guaranteed closed-app delivery requires Web Push plus a backend scheduler/cron service.
+Browser-only timers cannot guarantee notifications after a browser fully kills the app. Guaranteed closed-app delivery needs Web Push + a backend scheduler.

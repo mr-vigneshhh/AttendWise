@@ -69,6 +69,7 @@ function initialize() {
   elements.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
   elements.confirmDeleteBtn.addEventListener("click", confirmDelete);
   elements.reminderForm.addEventListener("submit", createReminder);
+  elements.reminderForm.addEventListener("submit", createReminder);
   elements.confirmModal.addEventListener("click", event => {
     if (event.target === elements.confirmModal) closeDeleteModal();
   });
@@ -218,6 +219,7 @@ function renderSubjects() {
 
     card.querySelector('[data-action="edit"]').addEventListener("click", () => editSubject(subject.id));
     card.querySelector('[data-action="attended"]').addEventListener("click", (event) => markAttended(subject.id, event.currentTarget));
+    card.querySelector('[data-action="absent"]').addEventListener("click", (event) => markAbsent(subject.id, event.currentTarget));
     card.querySelector('[data-action="delete"]').addEventListener("click", () => openDeleteModal(subject.id));
 
     elements.subjectsGrid.appendChild(card);
@@ -386,24 +388,9 @@ function resetDemoData() {
 }
 
 async function enableNotifications() {
-  if (!("Notification" in window)) {
-    showToast("Notifications are not supported in this browser.");
-    return;
-  }
-
-  if (Notification.permission === "granted") {
-    showToast("Attendance reminders are already enabled.");
-    sendRiskNotification(true);
-    return;
-  }
-
-  const permission = await Notification.requestPermission();
-
+  const permission = await requestNotificationPermission();
   if (permission === "granted") {
-    showToast("Attendance reminders enabled.");
     sendRiskNotification(true);
-  } else {
-    showToast("Notification permission was not granted.");
   }
 }
 
@@ -472,6 +459,25 @@ function markAttended(id, button) {
     showToast(`${subject.name}: attendance logged +1.`);
   } catch (e) {
     console.error(e);
+    showToast("Failed to save. Try again.");
+  }
+}
+
+
+function markAbsent(id, button) {
+  if (button.disabled) return;
+  const subject = subjects.find(item => item.id === id);
+  if (!subject) return;
+  button.disabled = true;
+  button.classList.add("is-saving");
+  button.innerHTML = '<span class="mini-spinner"></span> Saving...';
+  try {
+    subject.total += 1;
+    saveSubjects();
+    render();
+    showToast(`${subject.name}: absence logged +1.`);
+  } catch (error) {
+    console.error(error);
     showToast("Failed to save. Try again.");
   }
 }
