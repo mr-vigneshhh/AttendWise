@@ -760,3 +760,28 @@ form input:focus {
 .reminder-countdown{color:var(--primary);font-size:.66rem;font-weight:800}
 .absent-action:hover{color:var(--red)!important;border-color:var(--red)!important}
 @media(max-width:620px){.reminder-panel-head{flex-direction:column}.card-actions{flex-wrap:wrap}.card-actions button{min-width:calc(50% - 4px)}}
+
+/* v4: three-action subject card footer */
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.2fr 1fr;
+  gap: 8px;
+}
+.card-actions .absent-action:hover {
+  color: var(--red) !important;
+  border-color: var(--red) !important;
+  background: rgba(239, 68, 68, 0.08);
+}
+@media (max-width: 900px) {
+  .card-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .card-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+  .card-actions button {
+    min-width: 0;
+  }
+}

@@ -15,3 +15,7 @@ python -m http.server 8000
 Open http://localhost:8000.
 
 Browser-only timers cannot guarantee notifications after a browser fully kills the app. Guaranteed closed-app delivery needs Web Push + a backend scheduler.
+
+
+## v4 fix
+The subject-card template now explicitly renders the **✕ Absent +1** button. The card footer also uses a responsive grid so the four actions (Edit, Attended, Absent, Delete) remain visible on desktop and wrap cleanly on smaller screens.

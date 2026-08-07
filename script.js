@@ -213,13 +213,17 @@ function renderSubjects() {
       <div class="card-actions">
         <button type="button" data-action="edit" data-id="${subject.id}">✎ Edit</button>
         <button type="button" class="attended-action" data-action="attended" data-id="${subject.id}">✓ Attended +1</button>
+        <button type="button" class="absent-action" data-action="absent" data-id="${subject.id}">✕ Absent +1</button>
         <button type="button" class="delete-action" data-action="delete" data-id="${subject.id}">⌫ Delete</button>
       </div>
     `;
 
     card.querySelector('[data-action="edit"]').addEventListener("click", () => editSubject(subject.id));
     card.querySelector('[data-action="attended"]').addEventListener("click", (event) => markAttended(subject.id, event.currentTarget));
-    card.querySelector('[data-action="absent"]').addEventListener("click", (event) => markAbsent(subject.id, event.currentTarget));
+    const absentButton = card.querySelector('[data-action="absent"]');
+    if (absentButton) {
+      absentButton.addEventListener("click", (event) => markAbsent(subject.id, event.currentTarget));
+    }
     card.querySelector('[data-action="delete"]').addEventListener("click", () => openDeleteModal(subject.id));
 
     elements.subjectsGrid.appendChild(card);
