@@ -1,40 +1,20 @@
-# AttendWise
+# AttendWise v2
 
-AttendWise is a demo-ready attendance tracker built with HTML, CSS, and vanilla JavaScript.
+Updated hackathon MVP:
+- One-tap **Attended +1** on every subject card
+- Instant percentage/progress/status updates
+- LocalStorage persistence and rapid-click protection
+- One-time class reminders with cancellation and duplicate prevention
+- Browser notification permission handling
+- Local timezone formatting
+- PWA manifest + Service Worker offline shell
 
-## Core features
-
-1. Subject attendance tracking
-2. Attendance risk prediction and required-class calculation
-3. Visual dashboard with responsive cards and summaries
-
-## Extra demo features
-
-- LocalStorage persistence
-- Browser notification reminders
-- Dark/light theme
-- Form validation
-- Edit and delete actions
-- Demo data
-
-## Run locally
-
-Open `index.html` directly in a modern browser.
-
-For the Browser Notification API to work consistently, run the project through a local server:
-
+## Run
+Use a local server:
 ```bash
 python -m http.server 8000
 ```
+Open `http://localhost:8000`.
 
-Then open `http://localhost:8000`.
-
-## Project structure
-
-```text
-AttendWise/
-├── index.html
-├── styles.css
-├── script.js
-└── README.md
-```
+## Reminder limitation
+The MVP schedules notifications with `setTimeout()`, so it works reliably while the app/page remains active. Browsers can suspend timers when an app is fully closed/backgrounded. Guaranteed closed-app delivery requires Web Push plus a backend scheduler/cron service.

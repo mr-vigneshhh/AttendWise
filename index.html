@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="DJngmsGaPH1K-UrJ8ML08NizYXUGGeGvmL6WpGQJyFY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AttendWise - Track attendance and avoid shortages." />
   <title>AttendWise | Attendance Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#6d5efc" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -135,6 +136,16 @@
           <button id="resetDataBtn" class="text-button danger-text" type="button">Reset demo</button>
         </div>
 
+        <div class="reminder-panel">
+          <div><span class="eyebrow">SMART REMINDERS</span><h3>Class reminder</h3><p>Set a one-time reminder for your next class.</p></div>
+          <form id="reminderForm" class="reminder-form">
+            <select id="reminderSubject" aria-label="Reminder subject"></select>
+            <input id="reminderTime" type="datetime-local" required aria-label="Reminder time" />
+            <button class="secondary-button" type="submit">Set reminder</button>
+          </form>
+          <div id="reminderList" class="reminder-list"></div>
+        </div>
+
         <div id="emptyState" class="empty-state hidden">
           <div>📘</div>
           <h3>No subjects yet</h3>
@@ -159,7 +170,7 @@
       </div>
     </div>
   </div>
-<!-- Linking script -->
+
   <script src="script.js"></script>
 </body>
 </html>

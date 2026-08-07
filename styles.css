@@ -742,3 +742,10 @@ form input:focus {
     align-items: flex-start;
   }
 }
+
+.reminder-panel{display:grid;gap:14px;margin-bottom:22px;padding:18px;border:1px solid var(--border);border-radius:16px;background:rgba(109,94,252,.055)}
+.reminder-panel h3{margin:4px 0;font-size:1rem}.reminder-panel p{margin:0;color:var(--muted);font-size:.72rem}
+.reminder-form{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}.reminder-form select,.reminder-form input{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);background:var(--surface-solid)}
+.reminder-list{display:grid;gap:8px}.reminder-item{display:flex;justify-content:space-between;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surface-solid);font-size:.7rem}.reminder-item span{color:var(--muted)}.reminder-item button{border:0;color:var(--red);background:transparent;font-size:.68rem;font-weight:700}
+.attended-action.is-saving{opacity:.65;pointer-events:none}.mini-spinner{width:12px;height:12px;display:inline-block;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:720px){.reminder-form{grid-template-columns:1fr}}

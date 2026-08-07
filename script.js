@@ -1,7 +1,8 @@
 const STORAGE_KEYS = {
   subjects: "attendwise_subjects",
   target: "attendwise_target",
-  theme: "attendwise_theme"
+  theme: "attendwise_theme",
+  reminders: "attendwise_reminders"
 };
 
 const demoSubjects = [
@@ -40,7 +41,11 @@ const elements = {
   confirmDeleteBtn: document.getElementById("confirmDeleteBtn"),
   nameError: document.getElementById("nameError"),
   totalError: document.getElementById("totalError"),
-  attendedError: document.getElementById("attendedError")
+  attendedError: document.getElementById("attendedError"),
+  reminderForm: document.getElementById("reminderForm"),
+  reminderSubject: document.getElementById("reminderSubject"),
+  reminderTime: document.getElementById("reminderTime"),
+  reminderList: document.getElementById("reminderList")
 };
 
 initialize();
@@ -63,11 +68,14 @@ function initialize() {
   elements.themeToggle.addEventListener("click", toggleTheme);
   elements.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
   elements.confirmDeleteBtn.addEventListener("click", confirmDelete);
+  elements.reminderForm.addEventListener("submit", createReminder);
   elements.confirmModal.addEventListener("click", event => {
     if (event.target === elements.confirmModal) closeDeleteModal();
   });
 
+  registerServiceWorker();
   render();
+  scheduleStoredReminders();
 }
 
 function loadSubjects() {
@@ -143,6 +151,7 @@ function render() {
   renderSubjects();
   renderSummary();
   saveSubjects();
+  renderReminders();
 }
 
 function renderSubjects() {
@@ -202,11 +211,13 @@ function renderSubjects() {
 
       <div class="card-actions">
         <button type="button" data-action="edit" data-id="${subject.id}">✎ Edit</button>
+        <button type="button" class="attended-action" data-action="attended" data-id="${subject.id}">✓ Attended +1</button>
         <button type="button" class="delete-action" data-action="delete" data-id="${subject.id}">⌫ Delete</button>
       </div>
     `;
 
     card.querySelector('[data-action="edit"]').addEventListener("click", () => editSubject(subject.id));
+    card.querySelector('[data-action="attended"]').addEventListener("click", (event) => markAttended(subject.id, event.currentTarget));
     card.querySelector('[data-action="delete"]').addEventListener("click", () => openDeleteModal(subject.id));
 
     elements.subjectsGrid.appendChild(card);
@@ -445,3 +456,66 @@ function escapeHtml(value) {
     "'": "&#039;"
   }[character]));
 }
+
+function markAttended(id, button) {
+  if (button.disabled) return;
+  const subject = subjects.find(s => s.id === id);
+  if (!subject) return;
+  button.disabled = true;
+  button.classList.add("is-saving");
+  button.innerHTML = '<span class="mini-spinner"></span> Saving...';
+  try {
+    subject.total += 1;
+    subject.attended += 1;
+    saveSubjects();
+    render();
+    showToast(`${subject.name}: attendance logged +1.`);
+  } catch (e) {
+    console.error(e);
+    showToast("Failed to save. Try again.");
+  }
+}
+
+function loadReminders() {
+  try { const r=JSON.parse(localStorage.getItem(STORAGE_KEYS.reminders)); return Array.isArray(r)?r:[]; }
+  catch { return []; }
+}
+function saveReminders(r) { localStorage.setItem(STORAGE_KEYS.reminders, JSON.stringify(r)); }
+
+function renderReminders() {
+  if (!elements.reminderSubject) return;
+  const reminders=loadReminders().filter(r=>r.time>Date.now()-60000);
+  saveReminders(reminders);
+  elements.reminderSubject.innerHTML=subjects.length ? subjects.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join("") : '<option value="">Add a subject first</option>';
+  elements.reminderList.innerHTML="";
+  if(!reminders.length){elements.reminderList.innerHTML='<span style="color:var(--muted);font-size:.68rem;">No upcoming reminders.</span>';return;}
+  reminders.sort((a,b)=>a.time-b.time).forEach(r=>{
+    const s=subjects.find(x=>x.id===r.subjectId); if(!s)return;
+    const item=document.createElement("div"); item.className="reminder-item";
+    item.innerHTML=`<div><strong>${escapeHtml(s.name)}</strong> <span>• ${formatReminderTime(r.time)}</span></div><button type="button">Cancel</button>`;
+    item.querySelector("button").onclick=()=>{saveReminders(loadReminders().filter(x=>x.id!==r.id));renderReminders();showToast("Reminder cancelled.");};
+    elements.reminderList.appendChild(item);
+  });
+}
+function createReminder(e){
+  e.preventDefault();
+  if(!subjects.length)return showToast("Add a subject before creating a reminder.");
+  const time=new Date(elements.reminderTime.value).getTime(), subjectId=elements.reminderSubject.value;
+  if(!subjectId||!Number.isFinite(time)||time<=Date.now())return showToast("Choose a future reminder time.");
+  if("Notification" in window && Notification.permission!=="granted") enableNotifications();
+  const reminders=loadReminders();
+  if(reminders.some(r=>r.subjectId===subjectId&&Math.abs(r.time-time)<60000))return showToast("A similar reminder already exists.");
+  const reminder={id:crypto.randomUUID(),subjectId,time,createdAt:Date.now()};
+  reminders.push(reminder);saveReminders(reminders);elements.reminderForm.reset();renderReminders();scheduleReminder(reminder);showToast("Reminder scheduled.");
+}
+function scheduleStoredReminders(){loadReminders().forEach(scheduleReminder);}
+function scheduleReminder(r){const delay=r.time-Date.now();if(delay>0&&delay<=2147483647)setTimeout(()=>fireReminder(r.id),delay);}
+function fireReminder(id){
+  const r=loadReminders().find(x=>x.id===id);if(!r)return;
+  const s=subjects.find(x=>x.id===r.subjectId);if(!s)return;
+  const body=`It's time for ${s.name}. Don't forget to attend!`;
+  if("Notification" in window&&Notification.permission==="granted")new Notification("AttendWise class reminder",{body,tag:`attendwise-${id}`});else showToast(`🔔 ${body}`);
+  saveReminders(loadReminders().filter(x=>x.id!==id));renderReminders();
+}
+function formatReminderTime(t){return new Intl.DateTimeFormat(undefined,{dateStyle:"medium",timeStyle:"short"}).format(new Date(t));}
+function registerServiceWorker(){if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(e=>console.warn("Service Worker registration failed:",e)));}
